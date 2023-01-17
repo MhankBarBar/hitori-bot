@@ -1,0 +1,13 @@
+*.egg-info/
+build/
+dist/
+*.log
+*.pyc
+**/*.pyc
+.idea
+*.data.json
+open-*.json
+package*.json
+venv
+node_modules
+_IGNORE_session
