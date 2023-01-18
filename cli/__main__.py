@@ -97,7 +97,7 @@ if __name__ == "__main__":
                 observer.stop()
                 observer.join()
         else:
-            os.system(' '.join(sys.orig_argv))
+            os.system(sys.orig_argv[0] + ' ' + HitoriBotHandler.main)
     elif parse.action == "set":
         config = json.load(open('./config.json'))
         if parse.config.__len__() < 1:
