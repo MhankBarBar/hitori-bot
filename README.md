@@ -25,6 +25,11 @@ replace the `secure_api_key` with whatever you want
 > npx @open-wa/wa-automate --socket -p 8085 -k secure_api_key
 > python3 main.py
 ```
+#### Cli usage
+For advanved users, you can use cli to run the bot, this command will automatically restart program when file changed/modified
+```cmd
+> python3 -m cli run --debug
+```
 ### Configuration
 ```json
 {

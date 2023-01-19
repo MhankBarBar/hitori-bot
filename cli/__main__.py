@@ -19,6 +19,7 @@ if os.name == 'nt':
     except ModuleNotFoundError:
         import pip
         pip.main(['install', 'pywinpty'])
+        from winpty import PtyProcess
 else:
     from ptyprocess.ptyprocess import PtyProcess
     from signal import SIGWINCH
@@ -34,7 +35,7 @@ class HitoriBotHandler(FileSystemEventHandler):
         self.skip = skip
         self.n_skip = 0
         self.shell: PtyProcess = PtyProcess.spawn(
-            [sys.orig_argv[0], self.main]
+            [sys.executable, self.main]
         )
         print(
             Color.GREEN.box_bracket(
@@ -95,7 +96,7 @@ class HitoriBotHandler(FileSystemEventHandler):
                 )
                 self.shell.close()
                 self.shell: PtyProcess = PtyProcess.spawn(
-                    [sys.orig_argv[0], self.main]
+                    [sys.executable, self.main]
                 )
                 self.n_skip = 0
 
@@ -118,7 +119,7 @@ if __name__ == "__main__":
     actions = arg.add_subparsers(title="Actions", dest='action')
     run = actions.add_parser('run', help='run bot')
     run.add_argument('--debug', action='store_true')
-    run.add_argument('--skip', type=int, default=1)
+    run.add_argument('--skip', type=int, default=1 if os.name != "nt" else 2)
     run.add_argument('--nerdfont', action='store_true')
     config = actions.add_parser('set', help='set config json')
     config.add_argument('config', type=str, nargs="*")
@@ -138,7 +139,7 @@ if __name__ == "__main__":
                 observer.stop()
                 observer.join()
         else:
-            os.system(sys.orig_argv[0] + ' ' + HitoriBotHandler.main)
+            os.system(sys.executable + ' ' + HitoriBotHandler.main)
     elif parse.action == "set":
         config = json.load(open('./config.json'))
         if parse.config.__len__() < 1:
