@@ -1,8 +1,9 @@
 from wa_automate_socket_client import SocketClient
 import message
 
+
 def Joydazo(msg):
-    message.msgHandler(client, msg).handler
+    message.msgHandler(client, msg).handler()
 
 
 if __name__ == '__main__':
