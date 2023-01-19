@@ -1,18 +1,19 @@
 from src.utils import Dict2Obj, colorize
 from lib.genshin_achievement import genshin_achievement
+from lib.jadi_anime import AnimeConverter
 from io import BytesIO
 from base64 import b64encode
 from json import loads
+from .lang import ind
 
 
 class msgHandler:
     def __init__(self, client, message) -> None:
-        self.client = client
+        self.hitori = client
         self.message = Dict2Obj(message["data"]) if isinstance(message, dict) else None
         with open("config.json", "r") as f:
             self.config = Dict2Obj(loads(f.read()))
 
-    @property
     def handler(self):
         if self.message:
             try:
@@ -36,9 +37,9 @@ class msgHandler:
                 name, formattedTitle = chat.name, chat.formattedTitle
                 pushname, verifiedName, formattedName = (sender.pushname, sender.verifiedName, sender.formattedName)
                 pushname = pushname or verifiedName or formattedName
-                botNumber = self.client.getHostNumber() + "@c.us"
+                botNumber = self.hitori.getHostNumber() + "@c.us"
                 groupId = chat.groupMetadata.id if isGroupMsg else None
-                groupAdmins = self.client.getGroupAdmins(groupId) if isGroupMsg else None
+                groupAdmins = self.hitori.getGroupAdmins(groupId) if isGroupMsg else None
 
                 isImage = type_ == "image"
                 isVideo = type_ == "video"
@@ -57,60 +58,82 @@ class msgHandler:
                 isCmd = body.startswith(self.config.prefix)
 
                 if isCmd and not isGroupMsg:
-                    print(f"{colorize('[Exec]','cyan')} -> {colorize(command, 'green')} -> {colorize(str(args.__len__()), 'yellow')}")
+                    print(
+                        f"{colorize('[Exec]', 'cyan')} -> {colorize(command, 'green')} -> {colorize(str(args.__len__()), 'yellow')}")
                 elif isCmd and isGroupMsg:
-                    print(f"{colorize('[Exec]','cyan')} -> {colorize(command, 'green')} -> {colorize(str(args.__len__()), 'yellow')} -> in {colorize(name, 'magenta')} -> from {colorize(pushname, 'magenta')}")
+                    print(
+                        f"{colorize('[Exec]', 'cyan')} -> {colorize(command, 'green')} -> {colorize(str(args.__len__()), 'yellow')} -> in {colorize(name or formattedTitle, 'magenta')} -> from {colorize(pushname, 'magenta')}")
 
+                # Help and Menu Commands
                 if command in ["help", "menu"]:
-                    help_text = (f"\n"
-                                 f"*Genshin Impact Achievement Generator*\n"
-                                 f"*Command:*\n"
-                                 f"*{self.config.prefix}achievement* _text_\n"
-                                 f"*Example:*\n"
-                                 f"*{self.config.prefix}achievement* _Hello World_\n"
-                                 f"\n"
-                                 f"*{self.config.prefix}help* _to show this message_\n"
-                                 f"\n"
-                                 f"*{self.config.prefix}ping* _to show bot's ping_\n"
-                                 f"\n"
-                                 f"*Sticker Commands:*\n"
-                                 f"*{self.config.prefix}sticker* _to reply image or gif (todo)_\n"
-                                 f"\n"
-                                 f"*Sticker Taker Commands:*\n"
-                                 f"*{self.config.prefix}take* _to reply sticker_\n"
-                                 )
-                    self.client.sendText(from_, help_text)
+                    self.hitori.sendText(from_, ind.Menu(self.config.prefix).help())
                 elif command == "ping":
-                    self.client.sendText(from_, "pong")
+                    self.hitori.sendText(from_, "pong")
+
+                # Sticker Commands
                 elif command in ["take", "takestick"]:
                     if quotedMsg and quotedMsg.type == "sticker":
-                        self.client.sendImageAsSticker(
+                        self.hitori.sendImageAsSticker(
                             from_,
-                            self.client.decryptMedia(quotedMsg.__dict__),
+                            self.hitori.decryptMedia(quotedMsg.__dict__),
                             {"author": self.config.authorSticker, "pack": self.config.packSticker},
                         )
                     else:
-                        self.client.sendText(from_, "Reply sticker with !take")
-                elif command in ["stiker", "sticker"]:
+                        self.hitori.sendText(from_, "Reply sticker with !take")
+                elif command in ["stiker", "sticker", "s"]:
                     if isMedia and isImage or isQuotedImage:
-                        self.client.sendImageAsSticker(
+                        self.hitori.sendImageAsSticker(
                             from_,
-                            self.client.decryptMedia(self.message.__dict__ if isImage else quotedMsg.__dict__),
+                            self.hitori.decryptMedia(self.message.__dict__ if isImage else quotedMsg.__dict__),
                             {"author": self.config.authorSticker, "pack": self.config.packSticker, "keepScale": True}
                         )
                     else:
-                        self.client.sendText(from_, "Reply image with !stiker")
-                elif command in ["giachievement", "achievement"]:
+                        self.hitori.sendText(from_, "Reply image with !stiker")
+                elif command in ["stikergif", "stickergif", "sgif"]:
+                    if isMedia and isGif or isVideo or isQuotedGif or isQuotedVideo:
+                        self.hitori.sendMp4AsSticker(
+                            from_,
+                            self.hitori.decryptMedia(self.message.__dict__ if isGif or isVideo else quotedMsg.__dict__),
+                            None,
+                            {
+                                "author": self.config.authorSticker,
+                                "pack": self.config.packSticker,
+                                "keepScale": True,
+                                "crop": False,
+                                "loop": 0,
+                            }
+                        )
+                    else:
+                        self.hitori.sendText(from_, "Reply gif with !stikergif")
+                elif command in ["giachievement", "achievement", "ach"]:
                     if len(args) == 0:
-                        return self.client.sendText(from_, "Usage: !achievement <text>")
+                        return self.hitori.sendText(from_, "Usage: !achievement <text>")
                     io = BytesIO()
                     genshin_achievement(" ".join(args)).save(io, format="PNG")
                     base64img = "data:image/png;base64," + b64encode(io.getvalue()).decode("utf-8")
-                    self.client.sendImageAsSticker(
+                    self.hitori.sendImageAsSticker(
                         from_,
                         base64img,
                         {"author": self.config.authorSticker, "pack": self.config.packSticker, "keepScale": True}
                     )
+
+                # Image Commands
+                elif command in ["jadianime", "toanime"]:
+                    if isMedia and isImage or isQuotedImage:
+                        io = BytesIO()
+                        anime = AnimeConverter()
+                        res = anime.to_anime(self.hitori.decryptMedia(self.message.__dict__ if isImage else quotedMsg.__dict__))
+                        if not isinstance(res, dict):
+                            res.save(io, format="PNG")
+                        else:
+                            return self.hitori.sendText(from_, f"Error: res['msg']")
+                        self.hitori.sendImage(
+                            from_,
+                            "data:image/png;base64," + b64encode(io.getvalue()).decode("utf-8"),
+                            {"author": self.config.authorSticker, "pack": self.config.packSticker, "keepScale": True}
+                        )
+                    else:
+                        self.hitori.sendText(from_, "Reply image with !jadianime")
                 else:
                     pass
             except Exception as e:

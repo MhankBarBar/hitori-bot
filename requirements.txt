@@ -1,16 +1,23 @@
+aiohttp==3.7.4.post0
+async-timeout==3.0.1
+attrs==22.2.0
 bidict==0.22.1
 certifi==2022.12.7
+chardet==4.0.0
 charset-normalizer==3.0.1
 colorama==0.4.6
 idna==3.4
-munch==2.5.1.dev12
+multidict==6.0.4
+munch==2.5.0
 Pillow==9.4.0
 ptyprocess @ git+https://github.com/pexpect/ptyprocess@ce42a786ff6f4baff71382db9076c7398328abaf
 python-engineio==4.3.4
 python-socketio==5.7.2
 requests==2.28.2
 six==1.16.0
+typing_extensions==4.4.0
 urllib3==1.26.14
 wa-automate-socket-client==1.2.0
 watchdog==2.2.1
 websocket-client==1.4.2
+yarl==1.8.2

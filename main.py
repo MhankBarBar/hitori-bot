@@ -3,7 +3,7 @@ import message
 
 
 def Joydazo(msg):
-    message.msgHandler(client, msg).handler
+    message.msgHandler(client, msg).handler()
 
 
 if __name__ == '__main__':
