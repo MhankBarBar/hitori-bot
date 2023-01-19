@@ -26,7 +26,7 @@ replace the `secure_api_key` with whatever you want
 > python3 main.py
 ```
 #### Cli usage
-For advanved users, you can use cli to run the bot, this command will automatically restart program when file changed/modified
+For advanced users, you can use cli to run the bot, this command will automatically restart program when file changed/modified
 ```cmd
 > python3 -m cli run --debug
 ```
