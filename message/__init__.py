@@ -1,9 +1,11 @@
-from src.utils import Dict2Obj, colorize
+from src.utils import Dict2Obj, colorize, processTime, h2k
 from lib.genshin_achievement import genshin_achievement
 from lib.jadi_anime import AnimeConverter
+from lib.tiktok import TikTok
 from io import BytesIO
 from base64 import b64encode
 from json import loads
+from datetime import datetime
 from .lang import ind
 
 
@@ -13,6 +15,7 @@ class msgHandler:
         self.message = Dict2Obj(message["data"]) if isinstance(message, dict) else None
         with open("config.json", "r") as f:
             self.config = Dict2Obj(loads(f.read()))
+        self.lang = ind
 
     def handler(self):
         if self.message:
@@ -59,27 +62,50 @@ class msgHandler:
 
                 if isCmd and not isGroupMsg:
                     print(
-                        f"{colorize('[Exec]', 'cyan')} -> {colorize(command, 'green')} -> {colorize(str(args.__len__()), 'yellow')}")
+                        f"{colorize('✥', 'green')} {colorize(datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S'), 'white')} -> "
+                        f"{colorize('[Exec]', 'cyan')} -> {colorize(command, 'green')} -> "
+                        f"{colorize(str(args.__len__()), 'yellow')} -> {colorize(pushname, 'magenta')}")
                 elif isCmd and isGroupMsg:
                     print(
-                        f"{colorize('[Exec]', 'cyan')} -> {colorize(command, 'green')} -> {colorize(str(args.__len__()), 'yellow')} -> in {colorize(name or formattedTitle, 'magenta')} -> from {colorize(pushname, 'magenta')}")
+                        f"{colorize('✥', 'green')} {colorize(datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S'), 'white')} -> "
+                        f"{colorize('[Exec]', 'cyan')} -> {colorize(command, 'green')} -> "
+                        f"{colorize(str(args.__len__()), 'yellow')} -> "
+                        f"in {colorize(name or formattedTitle, 'magenta')} -> from {colorize(pushname, 'magenta')}")
 
                 # Help and Menu Commands
                 if command in ["help", "menu"]:
-                    self.hitori.sendText(from_, ind.Menu(self.config.prefix).help())
-                elif command == "ping":
-                    self.hitori.sendText(from_, "pong")
+                    with open("assets/images/banner.jpeg", "rb") as f:
+                        self.hitori.sendImage(
+                            from_,
+                            "data:image/png;base64," + b64encode(f.read()).decode("utf-8"),
+                            "banner.jpeg",
+                            self.lang.MENU.menu)
+                elif command in ["p", "ping"]:
+                    self.hitori.sendText(from_, f"_pong!!_\n{processTime(t, datetime.now())} seconds")
+                elif command in ["about", "tentang", "info"]:
+                    self.hitori.sendText(from_, self.lang.INFO)
+                elif command in ["usage", "penggunaan"]:
+                    if args.__len__() == 0:
+                        return self.hitori.sendText(from_, self.lang.USAGE.usage)
+                    pesan = self.lang.USAGE.get(args[0].lower())
+                    if pesan:
+                        self.hitori.sendText(from_, pesan)
+                    else:
+                        pesan = "Perintah yang kamu masukkan tidak ada di dalam daftar perintah yang tersedia"
+                        self.hitori.sendText(from_, pesan)
 
                 # Sticker Commands
                 elif command in ["take", "takestick"]:
                     if quotedMsg and quotedMsg.type == "sticker":
+                        if args.__len__() < 2:
+                            return self.hitori.reply(from_, self.lang.USAGE.take, id_)
                         self.hitori.sendImageAsSticker(
                             from_,
                             self.hitori.decryptMedia(quotedMsg.__dict__),
-                            {"author": self.config.authorSticker, "pack": self.config.packSticker},
+                            {"author": args[0], "pack": args[1]},
                         )
                     else:
-                        self.hitori.sendText(from_, "Reply sticker with !take")
+                        self.hitori.reply(from_, self.lang.USAGE.take, id_)
                 elif command in ["stiker", "sticker", "s"]:
                     if isMedia and isImage or isQuotedImage:
                         self.hitori.sendImageAsSticker(
@@ -88,7 +114,7 @@ class msgHandler:
                             {"author": self.config.authorSticker, "pack": self.config.packSticker, "keepScale": True}
                         )
                     else:
-                        self.hitori.sendText(from_, "Reply image with !stiker")
+                        self.hitori.reply(from_, self.lang.USAGE.sticker, id_)
                 elif command in ["stikergif", "stickergif", "sgif"]:
                     if isMedia and isGif or isVideo or isQuotedGif or isQuotedVideo:
                         self.hitori.sendMp4AsSticker(
@@ -104,16 +130,15 @@ class msgHandler:
                             }
                         )
                     else:
-                        self.hitori.sendText(from_, "Reply gif with !stikergif")
+                        self.hitori.reply(from_, self.lang.USAGE.stickergif, id_)
                 elif command in ["giachievement", "achievement", "ach"]:
                     if len(args) == 0:
-                        return self.hitori.sendText(from_, "Usage: !achievement <text>")
+                        return self.hitori.reply(from_, self.lang.USAGE.achievement, id_)
                     io = BytesIO()
                     genshin_achievement(" ".join(args)).save(io, format="PNG")
-                    base64img = "data:image/png;base64," + b64encode(io.getvalue()).decode("utf-8")
                     self.hitori.sendImageAsSticker(
                         from_,
-                        base64img,
+                        "data:image/png;base64," + b64encode(io.getvalue()).decode("utf-8"),
                         {"author": self.config.authorSticker, "pack": self.config.packSticker, "keepScale": True}
                     )
 
@@ -126,14 +151,45 @@ class msgHandler:
                         if not isinstance(res, dict):
                             res.save(io, format="PNG")
                         else:
-                            return self.hitori.sendText(from_, f"Error: res['msg']")
+                            return self.hitori.sendText(from_, f"Error: {res['msg']}")
                         self.hitori.sendImage(
                             from_,
                             "data:image/png;base64," + b64encode(io.getvalue()).decode("utf-8"),
                             {"author": self.config.authorSticker, "pack": self.config.packSticker, "keepScale": True}
                         )
                     else:
-                        self.hitori.sendText(from_, "Reply image with !jadianime")
+                        self.hitori.reply(from_, self.lang.USAGE.toanime, id_)
+
+                # Download Commands
+                elif command in ["tiktok", "tt"]:
+                    if len(args) == 0:
+                        return self.hitori.reply(from_, self.lang.USAGE.tiktok, id_)
+                    self.hitori.reply(from_, self.lang.PROCESSING, id_)
+                    try:
+                        tiktok = TikTok()
+                        res = tiktok.download(args[0])
+                        if not res.get('error'):
+                            self.hitori.sendFileFromUrl(
+                                from_,
+                                tiktok.BASE_URL + res.get('play'),
+                                "tiktok.mp4",
+                                self.lang.CAPTION.tiktok % (
+                                    res.get('author').get('nickname'),
+                                    res.get('title'),
+                                    h2k(res.get('play_count')),
+                                    h2k(res.get('digg_count')),
+                                    h2k(res.get('comment_count')),
+                                    h2k(res.get('share_count')),
+                                    h2k(res.get('duration')),
+                                    res.get('music_info').get('title')
+                                ),
+                                id_
+                            )
+                        else:
+                            self.hitori.reply(from_, res['error'])
+                    except Exception as e:
+                        print(e)
+                        self.hitori.sendText(from_, f"Error: {e}")
                 else:
                     pass
             except Exception as e:
