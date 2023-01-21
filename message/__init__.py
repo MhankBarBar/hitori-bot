@@ -91,8 +91,7 @@ class msgHandler:
                     if pesan:
                         self.hitori.sendText(from_, pesan)
                     else:
-                        pesan = "Perintah yang kamu masukkan tidak ada di dalam daftar perintah yang tersedia"
-                        self.hitori.sendText(from_, pesan)
+                        self.hitori.sendText(from_, self.lang.USAGE.not_available)
 
                 # Sticker Commands
                 elif command in ["take", "takestick"]:
@@ -154,8 +153,7 @@ class msgHandler:
                             return self.hitori.sendText(from_, f"Error: {res['msg']}")
                         self.hitori.sendImage(
                             from_,
-                            "data:image/png;base64," + b64encode(io.getvalue()).decode("utf-8"),
-                            {"author": self.config.authorSticker, "pack": self.config.packSticker, "keepScale": True}
+                            "data:image/png;base64," + b64encode(io.getvalue()).decode("utf-8")
                         )
                     else:
                         self.hitori.reply(from_, self.lang.USAGE.toanime, id_)
@@ -180,7 +178,7 @@ class msgHandler:
                                     h2k(res.get('digg_count')),
                                     h2k(res.get('comment_count')),
                                     h2k(res.get('share_count')),
-                                    h2k(res.get('duration')),
+                                    res.get('duration'),
                                     res.get('music_info').get('title')
                                 ),
                                 id_

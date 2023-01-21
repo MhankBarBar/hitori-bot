@@ -48,6 +48,6 @@ SocketClient('http://localhost:8085/', 'your_secure_api_key')
 |     Feature     | Status |
 |:---------------:|:-----:|
 | Sticker Creator |   ✅   |
-|   Downloader    | `Todo` |
+|   Downloader    |   ✅   |
 |  Group Manager  | `Todo` |
 |  Owner Command  | `Todo` |

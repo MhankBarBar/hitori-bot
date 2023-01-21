@@ -31,6 +31,7 @@ USAGE = Dict2Obj({
         f"Perintah: {config.prefix}usage - {config.prefix}penggunaan\n"
         f"Contoh: {config.prefix}usage downloader\n"
     ),
+    "not_available": "Perintah yang kamu masukkan tidak ada di dalam daftar perintah yang tersedia",
     "take": (
         f"Balas stiker dengan perintah dibawah\n"
         f"Perintah: {config.prefix}take <author stiker> <pack stiker>\n\n"
