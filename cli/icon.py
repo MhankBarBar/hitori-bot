@@ -12,7 +12,7 @@ class Icon:
 
     @property
     def FINISHED(self):
-        return 0xebe9 if self.nerdfont else  0x2600
+        return 0xebe9 if self.nerdfont else 0x2600
     
     @property
     def EXIT(self):
