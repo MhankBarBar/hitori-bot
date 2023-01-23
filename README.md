@@ -22,7 +22,7 @@
 ### Usage
 replace the `secure_api_key` with whatever you want
 ```cmd
-> npx @open-wa/wa-automate --socket -p 8085 -k secure_api_key
+> npx @open-wa/wa-automate --socket -p 8085 -k secure_api_key --use-chrome
 > python3 main.py
 ```
 #### Cli usage
@@ -31,6 +31,7 @@ For advanced users, you can use cli to run the bot, this command will automatica
 > python3 -m cli run --debug
 ```
 ### Configuration
+open `config.json` and change this part with whatever you want
 ```json
 {
     "authorSticker": "MhankBarBar",

@@ -57,10 +57,34 @@ USAGE = Dict2Obj({
     "tiktok": (
         f"Perintah: {config.prefix}tiktok - {config.prefix}tt\n"
         f"Contoh: {config.prefix}tiktok https://vt.tiktok.com/xxxxxxxx/"
+    ),
+    "add": (
+        f"Perintah: {config.prefix}add <nomor>\n"
+        f"Contoh: {config.prefix}add 628xxxxxxxxxx"
+    ),
+    "kick": (
+        f"Perintah: {config.prefix}kick <@mention>\n"
+        f"Contoh: {config.prefix}kick @member-a @member-b"
     )
 })
 
 PROCESSING = "Sedang diproses..."
+
+ERR = Dict2Obj({
+    "bot_not_admin": "Maaf, bot tidak memiliki akses admin",
+    "not_admin": "Maaf, kamu bukan admin",
+    "not_contact": "Maaf, nomor tidak terdaftar di whatsapp",
+    "not_group": "Maaf, perintah ini hanya bisa digunakan di dalam grup",
+    "add": "Gagal menambahkan %s ke dalam grup",
+    "kick": "Gagal mengeluarkan %s dari grup",
+})
+
+SUCCESS = Dict2Obj({
+    "add_member": "Berhasil menambahkan %s ke dalam grup"
+})
+
+WELCOME = "Halo @%s, selamat datang di grup %s"
+GOODBYE = "Selamat tinggal @%s, xixixi"
 
 CAPTION = Dict2Obj({
     "tiktok": (
