@@ -5,12 +5,10 @@ dist/
 *.pyc
 **/*.pyc
 .idea
-*.data.json
 open-*.json
-package*.json
+pack*.json
 venv
 node_modules
-_IGNORE_session
 
 # managed
 **.data.json

@@ -40,9 +40,9 @@ open `config.json` and change this part with whatever you want
     "prefix": "!"
 }
 ```
-also don't forget to replace this part with your own secure_api_key in `main.py`
+also don't forget to replace this part with your own secure_api_key in `main.py` on line 6
 ```python
-SocketClient('http://localhost:8085/', 'your_secure_api_key')
+KEY = 'your secure api key here'
 ```
 
 # Features
