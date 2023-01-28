@@ -16,8 +16,6 @@ def onIncomingCall(call):
 
 
 def onParticipantsChanged(participantsChanged):
-    # For now, im disabling this feature
-    return None
     data = participantsChanged['data']
     me = f"{client.getHostNumber()}@c.us"
     groupInfo = client.getGroupInfo(data['chat'])
@@ -25,16 +23,12 @@ def onParticipantsChanged(participantsChanged):
     if data['action'] == 'add' and data['who'] != me:
         client.sendTextWithMentions(
             data['chat'],
-            message.ind.WELCOME % (data['who'].split('@')[0], groupInfo['title']),
-            False,
-            [data['who']]
+            message.ind.WELCOME % (data['who'].split('@')[0], groupInfo['title'])
         )
     elif data['action'] == 'remove' and data['who'] != me:
         client.sendTextWithMentions(
             data['chat'],
-            message.ind.GOODBYE % (data['who'].split('@')[0]),
-            False,
-            [data['who']]
+            message.ind.GOODBYE % (data['who'].split('@')[0])
         )
 
 

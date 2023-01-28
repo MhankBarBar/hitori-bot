@@ -146,6 +146,8 @@ class msgHandler:
                     )
                 else:
                     self.hitori.reply(from_, self.lang.USAGE.stickergif, id_)
+
+            # Genshin Impact Commands
             elif command in ["giachievement", "achievement", "ach"]:
                 if len(args) == 0:
                     return self.hitori.reply(from_, self.lang.USAGE.achievement, id_)
@@ -224,7 +226,6 @@ class msgHandler:
                     self.hitori.reply(from_, self.lang.SUCCESS.add, id_)
                 else:
                     self.hitori.reply(from_, self.lang.ERR.add % args[0], id_)
-
             elif command in ["kick", "tendang"]:
                 if not isGroupMsg:
                     return self.hitori.reply(from_, self.lang.ERR.not_group, id_)
@@ -240,6 +241,46 @@ class msgHandler:
                 )
                 for x in mentionedJidList:
                     self.hitori.removeParticipant(from_, x)
+            elif command == "promote":
+                if not isGroupMsg:
+                    return self.hitori.reply(from_, self.lang.ERR.not_group, id_)
+                if len(mentionedJidList) == 0:
+                    return self.hitori.reply(from_, self.lang.USAGE.promote, id_)
+                if not isGroupAdmins:
+                    return self.hitori.reply(from_, self.lang.ERR.not_admin, id_)
+                if not isBotGroupAdmins:
+                    return self.hitori.reply(from_, self.lang.ERR.bot_not_admin, id_)
+                for x in mentionedJidList:
+                    self.hitori.promoteParticipant(from_, x)
+                self.hitori.sendTextWithMentions(
+                    from_,
+                    f"Congrats {', '.join(['@' + x.split('@')[0] for x in mentionedJidList])} for being promoted"
+                )
+            elif command == "demote":
+                if not isGroupMsg:
+                    return self.hitori.reply(from_, self.lang.ERR.not_group, id_)
+                if len(mentionedJidList) == 0:
+                    return self.hitori.reply(from_, self.lang.USAGE.demote, id_)
+                if not isGroupAdmins:
+                    return self.hitori.reply(from_, self.lang.ERR.not_admin, id_)
+                if not isBotGroupAdmins:
+                    return self.hitori.reply(from_, self.lang.ERR.bot_not_admin, id_)
+                for x in mentionedJidList:
+                    self.hitori.demoteParticipant(from_, x)
+                self.hitori.sendTextWithMentions(
+                    from_,
+                    f"Sadly {', '.join(['@' + x.split('@')[0] for x in mentionedJidList])} for being demoted"
+                )
+            elif command in ["mentionall", "all", "everyone"]:
+                if not isGroupMsg:
+                    return self.hitori.reply(from_, self.lang.ERR.not_group, id_)
+                if not isGroupAdmins:
+                    return self.hitori.reply(from_, self.lang.ERR.not_admin, id_)
+                if len(args) == 0:
+                    return self.hitori.reply(from_, self.lang.USAGE.mentionall, id_)
+                members = self.hitori.getGroupMembersId(groupId)
+                msg = f"{' '.join(args)}\n\n {', '.join(['@' + x.split('@')[0] for x in members])}"
+                self.hitori.sendTextWithMentions(from_, msg)
 
         except Exception as e:
             print(e)

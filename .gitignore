@@ -3,6 +3,8 @@ build/
 dist/
 *.log
 *.pyc
+*.lock
+*.toml
 **/*.pyc
 .idea
 open-*.json

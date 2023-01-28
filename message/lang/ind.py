@@ -12,6 +12,8 @@ MENU = Dict2Obj({
         f"♯ {config.prefix}usage - Menampilkan penggunaan perintah bot\n\n"
         f"♯ {config.prefix}menu downloader - Untuk menampilkan menu downloader\n"
         f"♯ {config.prefix}menu sticker - Untuk menampilkan menu sticker\n"
+        f"♯ {config.prefix}menu image - Untuk menampilkan menu image\n"
+        f"♯ {config.prefix}menu group - Untuk menampilkan menu group\n"
     ),
     "downloader": (
         f"♯ {config.prefix}tiktok - Mendownload video tiktok\n"
@@ -21,6 +23,16 @@ MENU = Dict2Obj({
         f"♯ {config.prefix}stiker | {config.prefix}s - Mengubah gambar menjadi stiker\n"
         f"♯ {config.prefix}stikergif | {config.prefix}sgif - Mengubah gif/video menjadi stiker\n"
         f"♯ {config.prefix}achievement | {config.prefix}ach - Membuat achievement genshin dan menjadikannya stiker\n"
+    ),
+    "image": (
+        f"♯ {config.prefix}toanime - Mengubah gambar menjadi anime\n"
+    ),
+    "group": (
+        f"♯ {config.prefix}add - Menambahkan seseorang ke dalam grup\n"
+        f"♯ {config.prefix}kick - Mengeluarkan seseorang dari grup\n"
+        f"♯ {config.prefix}promote - Menjadikan seseorang sebagai admin grup\n"
+        f"♯ {config.prefix}demote - Menghapus admin seseorang dari grup\n"
+        f"♯ {config.prefix}mentionall - Mention semua member grup\n"
     )
 })
 
@@ -59,12 +71,24 @@ USAGE = Dict2Obj({
         f"Contoh: {config.prefix}tiktok https://vt.tiktok.com/xxxxxxxx/"
     ),
     "add": (
-        f"Perintah: {config.prefix}add <nomor>\n"
+        f"Perintah: {config.prefix}add - {config.prefix}tambah\n"
         f"Contoh: {config.prefix}add 628xxxxxxxxxx"
     ),
     "kick": (
-        f"Perintah: {config.prefix}kick <@mention>\n"
+        f"Perintah: {config.prefix}kick - {config.prefix}tendang\n"
         f"Contoh: {config.prefix}kick @member-a @member-b"
+    ),
+    "promote": (
+        f"Perintah: {config.prefix}promote\n"
+        f"Contoh: {config.prefix}promote @member-a @member-b"
+    ),
+    "demote": (
+        f"Perintah: {config.prefix}demote\n"
+        f"Contoh: {config.prefix}demote @admin-a @admin-b"
+    ),
+    "mentionall": (
+        f"Perintah: {config.prefix}mentionall - {config.prefix}everyone - {config.prefix}all\n"
+        f"Contoh: {config.prefix}mentionall Halo semua, selamat pagi"
     )
 })
 
