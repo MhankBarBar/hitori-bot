@@ -2,20 +2,23 @@ from src.utils import Dict2Obj, colorize, processTime, h2k
 from lib.genshin_achievement import genshin_achievement
 from lib.jadi_anime import AnimeConverter
 from lib.tiktok import TikTok
+from lib.dalle import Dalle
 from io import BytesIO
+from PIL import Image
 from base64 import b64encode
-from json import loads
+from json import loads, dumps
 from datetime import datetime
 from .lang import ind
 
 
 class msgHandler:
-    def __init__(self, client, message) -> None:
+    def __init__(self, client, message, start) -> None:
         self.hitori = client
         self.message = Dict2Obj(message["data"]) if isinstance(message, dict) else None
         with open("config.json", "r") as f:
             self.config = Dict2Obj(loads(f.read()))
         self.lang = ind
+        self.start = start
 
     def handler(self):
         if not self.message:
@@ -45,6 +48,7 @@ class msgHandler:
             groupId = chat.groupMetadata.id if isGroupMsg else None
             groupAdmins = self.hitori.getGroupAdmins(groupId) if isGroupMsg else None
 
+            isOwner = sender.id == self.config.owner
             isBotGroupAdmins = groupId is not None and botNumber in groupAdmins
             isGroupAdmins = groupId is not None and sender.id in groupAdmins
 
@@ -91,12 +95,18 @@ class msgHandler:
 
             # Help and Menu Commands
             if command in ["help", "menu"]:
-                with open("assets/images/banner.jpeg", "rb") as f:
-                    self.hitori.sendImage(
-                        from_,
-                        "data:image/png;base64," + b64encode(f.read()).decode("utf-8"),
-                        "banner.jpeg",
-                        self.lang.MENU.menu)
+                if len(args) == 0:
+                    with open("assets/images/banner.jpeg", "rb") as f:
+                        self.hitori.sendImage(
+                            from_,
+                            "data:image/png;base64," + b64encode(f.read()).decode("utf-8"),
+                            "banner.jpeg",
+                            self.lang.MENU.menu)
+                else:
+                    if pesan := self.lang.MENU.get(args[0].lower()):
+                        self.hitori.sendText(from_, pesan)
+                    else:
+                        self.hitori.sendText(from_, self.lang.MENU.not_available)
             elif command in ["p", "ping"]:
                 self.hitori.sendText(from_, f"_pong!!_\n{processTime(t, datetime.now())} seconds")
             elif command in ["about", "tentang", "info"]:
@@ -108,6 +118,11 @@ class msgHandler:
                     self.hitori.sendText(from_, pesan)
                 else:
                     self.hitori.sendText(from_, self.lang.USAGE.not_available)
+
+            # Other Commands
+            elif command == "runtime":
+                total = datetime.now() - self.start
+                self.hitori.sendText(from_, f"Bot has been running for {str(total).split('.')[0]}")
 
             # Sticker Commands
             elif command in ["take", "takestick"]:
@@ -176,6 +191,30 @@ class msgHandler:
                     )
                 else:
                     self.hitori.reply(from_, self.lang.USAGE.toanime, id_)
+            elif command == "dalle":
+                if len(args) == 0:
+                    return self.hitori.reply(from_, self.lang.USAGE.dalle, id_)
+                elif len(" ".join(args)) > 100:
+                    return self.hitori.reply(from_, "terlalu panjang", id_)
+                self.hitori.reply(from_, "Mohon tunggu selama kurang lebih 2 menit", id_)
+                dalle = Dalle(" ".join(args), sender.id.split("@")[0])
+                res = dalle.generate()
+                if isinstance(res, str):
+                    self.hitori.sendImage(
+                        from_,
+                        res,
+                        "dalle.png",
+                        f"Result for {' '.join(args)}"
+                    )
+                else:
+                    self.hitori.sendText(from_, "Dalle error")
+            elif command == "test":
+                self.hitori.sendImage(
+                    from_,
+                    "generated/6281947690604/art.png",
+                    "filename.png",
+                    "test"
+                )
 
             # Download Commands
             elif command in ["tiktok", "tt"]:
@@ -281,6 +320,43 @@ class msgHandler:
                 members = self.hitori.getGroupMembersId(groupId)
                 msg = f"{' '.join(args)}\n\n {', '.join(['@' + x.split('@')[0] for x in members])}"
                 self.hitori.sendTextWithMentions(from_, msg)
+            elif command in ["grouplink", "linkgrup", "linkgroup"]:
+                if not isGroupMsg:
+                    return self.hitori.reply(from_, self.lang.ERR.not_group, id_)
+                if not isGroupAdmins:
+                    return self.hitori.reply(from_, self.lang.ERR.not_admin, id_)
+                if not isBotGroupAdmins:
+                    return self.hitori.reply(from_, self.lang.ERR.bot_not_admin, id_)
+                link = self.hitori.getGroupInviteLink(groupId)
+                self.hitori.sendLinkWithAutoPreview(from_, link, link)
+            elif command == "setgroupicon":
+                if not isGroupMsg:
+                    return self.hitori.reply(from_, self.lang.ERR.not_group, id_)
+                if not isGroupAdmins:
+                    return self.hitori.reply(from_, self.lang.ERR.not_admin, id_)
+                if not isBotGroupAdmins:
+                    return self.hitori.reply(from_, self.lang.ERR.bot_not_admin, id_)
+                if isMedia and isImage or isQuotedImage:
+                    self.hitori.setGroupIcon(
+                        groupId,
+                        self.hitori.decryptMedia(self.message.__dict__ if isImage else quotedMsg.__dict__)
+                    )
+                    self.hitori.reply(from_, self.lang.SUCCESS.set_group_icon, id_)
+                else:
+                    self.hitori.reply(from_, self.lang.ERR.not_image, id_)
+
+            # Owner Commands
+            elif command == "setprefix":
+                # this command disabled for now
+                return
+                if not isOwner:
+                    return self.hitori.reply(from_, self.lang.ERR.not_owner, id_)
+                if len(args) == 0:
+                    return self.hitori.reply(from_, self.lang.USAGE.setprefix, id_)
+                self.config.prefix = args[0]
+                with open("config.json", "w") as f:
+                    f.write(dumps(self.config.__dict__, indent=4))
+                self.hitori.reply(from_, self.lang.SUCCESS.set_prefix % args[0], id_)
 
         except Exception as e:
             print(e)

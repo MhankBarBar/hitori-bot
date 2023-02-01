@@ -1,12 +1,14 @@
 from wa_automate_socket_client import SocketClient
+from datetime import datetime
 import message
 
 HOST = 'http://localhost:8085/'
 KEY = 'j0yd4z0'
+START = datetime.now()
 
 
 def Joydazo(msg):
-    message.msgHandler(client, msg).handler()
+    message.msgHandler(client, msg, START).handler()
 
 
 def onIncomingCall(call):

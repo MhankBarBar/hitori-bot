@@ -6,14 +6,17 @@ config = Dict2Obj(loads(open("config.json", "r").read()))
 
 
 MENU = Dict2Obj({
+    "not_available": "Menu tidak tersedia!",
     "menu": (
-        f"♯ {config.prefix}help | {config.prefix}menu - Menampilkan menu bot\n"
-        f"♯ {config.prefix}ping - Menampilkan ping bot\n\n"
-        f"♯ {config.prefix}usage - Menampilkan penggunaan perintah bot\n\n"
-        f"♯ {config.prefix}menu downloader - Untuk menampilkan menu downloader\n"
-        f"♯ {config.prefix}menu sticker - Untuk menampilkan menu sticker\n"
-        f"♯ {config.prefix}menu image - Untuk menampilkan menu image\n"
-        f"♯ {config.prefix}menu group - Untuk menampilkan menu group\n"
+        f"♯ _{config.prefix}help_ | _{config.prefix}menu_ - Menampilkan menu bot\n"
+        f"♯ _{config.prefix}ping_ - Menampilkan ping bot\n"
+        f"♯ _{config.prefix}runtime_ - Menampilkan total waktu bot berjalan\n"
+        f"♯ _{config.prefix}usage_ - Menampilkan penggunaan perintah bot\n"
+        f"♯ _{config.prefix}info_ - Menampilkan informasi bot\n"
+        f"♯ _{config.prefix}menu downloader_ - Untuk menampilkan menu downloader\n"
+        f"♯ _{config.prefix}menu sticker_ - Untuk menampilkan menu sticker\n"
+        f"♯ _{config.prefix}menu image_ - Untuk menampilkan menu image\n"
+        f"♯ _{config.prefix}menu group_ - Untuk menampilkan menu group\n"
     ),
     "downloader": (
         f"♯ {config.prefix}tiktok - Mendownload video tiktok\n"
@@ -26,6 +29,7 @@ MENU = Dict2Obj({
     ),
     "image": (
         f"♯ {config.prefix}toanime - Mengubah gambar menjadi anime\n"
+        f"♯ {config.prefix}dalle - Mengubah teks menjadi gambar\n"
     ),
     "group": (
         f"♯ {config.prefix}add - Menambahkan seseorang ke dalam grup\n"
@@ -33,6 +37,7 @@ MENU = Dict2Obj({
         f"♯ {config.prefix}promote - Menjadikan seseorang sebagai admin grup\n"
         f"♯ {config.prefix}demote - Menghapus admin seseorang dari grup\n"
         f"♯ {config.prefix}mentionall - Mention semua member grup\n"
+        f"♯ {config.prefix}linkgroup - Mendapatkan link grup\n"
     )
 })
 
@@ -66,6 +71,10 @@ USAGE = Dict2Obj({
         f"Kirim gambar dengan caption atau balas gambar dengan perintah dibawah\n"
         f"Perintah: {config.prefix}jadianime - {config.prefix}toanime"
     ),
+    "dalle": (
+        f"Perintah: {config.prefix}dalle\n"
+        f"Contoh: {config.prefix}dalle Beautiful flowers"
+    ),
     "tiktok": (
         f"Perintah: {config.prefix}tiktok - {config.prefix}tt\n"
         f"Contoh: {config.prefix}tiktok https://vt.tiktok.com/xxxxxxxx/"
@@ -89,7 +98,19 @@ USAGE = Dict2Obj({
     "mentionall": (
         f"Perintah: {config.prefix}mentionall - {config.prefix}everyone - {config.prefix}all\n"
         f"Contoh: {config.prefix}mentionall Halo semua, selamat pagi"
-    )
+    ),
+    "linkgroup": (
+        f"Perintah: {config.prefix}linkgroup - {config.prefix}linkgrup - {config.prefix}grouplink\n"
+        f"Contoh: {config.prefix}linkgroup"
+    ),
+    "setgroupicon": (
+        f"Kirim gambar dengan caption atau balas gambar dengan perintah dibawah\n"
+        f"Perintah: {config.prefix}setgroupicon"
+    ),
+    "setprefix": (
+        f"Perintah: {config.prefix}setprefix\n"
+        f"Contoh: {config.prefix}setprefix ?"
+    ),
 })
 
 PROCESSING = "Sedang diproses..."
@@ -101,10 +122,13 @@ ERR = Dict2Obj({
     "not_group": "Maaf, perintah ini hanya bisa digunakan di dalam grup",
     "add": "Gagal menambahkan %s ke dalam grup",
     "kick": "Gagal mengeluarkan %s dari grup",
+    "not_owner": "Maaf, kamu bukan owner bot"
 })
 
 SUCCESS = Dict2Obj({
-    "add_member": "Berhasil menambahkan %s ke dalam grup"
+    "add_member": "Berhasil menambahkan %s ke dalam grup",
+    "set_group_icon": "Berhasil mengubah icon grup",
+    "set_prefix": "Berhasil mengubah prefix menjadi %s"
 })
 
 WELCOME = "Halo @%s, selamat datang di grup %s"
@@ -132,6 +156,6 @@ INFO = (
 
 BANNER = (
     f"{Fore.CYAN}╦ ╦{Fore.WHITE}┬┌┬┐┌─┐┬─┐┬  {Fore.CYAN}╦ ╦{Fore.WHITE}┬ ┬┌─┐┌┬┐┌─┐{Fore.CYAN}╔═╗{Fore.WHITE}┌─┐┌─┐  {Fore.CYAN}╔╗ {Fore.WHITE}┌─┐┌┬┐\n"
-    f"{Fore.CYAN}╠═╣{Fore.WHITE}│ │ │ │├┬┘│  {Fore.CYAN}║║║{Fore.WHITE}├─┤├─┤ │ └─┐{Fore.CYAN}╠═╣{Fore.WHITE}├─┘├─┘  {Fore.CYAN}╠╩╗{Fore.WHITE}│ │ │\n" 
+    f"{Fore.CYAN}╠═╣{Fore.WHITE}│ │ │ │├┬┘│  {Fore.CYAN}║║║{Fore.WHITE}├─┤├─┤ │ └─┐{Fore.CYAN}╠═╣{Fore.WHITE}├─┘├─┘  {Fore.CYAN}╠╩╗{Fore.WHITE}│ │ │\n"
     f"{Fore.CYAN}╩ ╩{Fore.WHITE}┴ ┴ └─┘┴└─┴  {Fore.CYAN}╚╩╝{Fore.WHITE}┴ ┴┴ ┴ ┴ └─┘{Fore.CYAN}╩ ╩{Fore.WHITE}┴  ┴    {Fore.CYAN}╚═╝{Fore.WHITE}└─┘ ┴"
 )
