@@ -7,10 +7,10 @@ jobs:
   generate-changelog:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1.2.4
+    - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - uses: BobAnkh/auto-generate-changelog@v1
+    - uses: BobAnkh/auto-generate-changelog@v1.2.4
       with:
         REPO_NAME: ''
         ACCESS_TOKEN: ${{secrets.GH_TOKEN}}
