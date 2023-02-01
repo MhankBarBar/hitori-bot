@@ -208,13 +208,6 @@ class msgHandler:
                     )
                 else:
                     self.hitori.sendText(from_, "Dalle error")
-            elif command == "test":
-                self.hitori.sendImage(
-                    from_,
-                    "generated/6281947690604/art.png",
-                    "filename.png",
-                    "test"
-                )
 
             # Download Commands
             elif command in ["tiktok", "tt"]:
