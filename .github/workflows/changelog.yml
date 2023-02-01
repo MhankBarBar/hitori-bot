@@ -1,0 +1,17 @@
+name: changelog_workflow
+on:
+  release:
+    types: [created, edited]
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: joshlynchONS/auto-generate-changelog@master
+      with:
+        REPO_NAME: ''
+        ACCESS_TOKEN: ${{secrets.GH_TOKEN}}
+        PATH: 'CHANGELOG.md'
