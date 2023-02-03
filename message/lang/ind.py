@@ -15,6 +15,7 @@ MENU = Dict2Obj({
         f"♯ _{config.prefix}menu sticker_ - Untuk menampilkan menu sticker\n"
         f"♯ _{config.prefix}menu image_ - Untuk menampilkan menu image\n"
         f"♯ _{config.prefix}menu group_ - Untuk menampilkan menu group\n"
+        f"♯ _{config.prefix}menu other_ - Untuk menampilkan menu lainnya\n"
     ),
     "downloader": (
         f"♯ {config.prefix}tiktok - Mendownload video tiktok\n"
@@ -36,6 +37,9 @@ MENU = Dict2Obj({
         f"♯ {config.prefix}demote - Menghapus admin seseorang dari grup\n"
         f"♯ {config.prefix}mentionall - Mention semua member grup\n"
         f"♯ {config.prefix}linkgroup - Mendapatkan link grup\n"
+    ),
+    "other": (
+        f"♯ {config.prefix}chatgpt - Mengobrol dengan chatGPT\n"
     )
 })
 
