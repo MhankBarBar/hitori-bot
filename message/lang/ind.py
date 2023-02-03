@@ -1,9 +1,7 @@
-from json import loads
-from src.utils import Dict2Obj
-from colorama import Fore
+from src.utils import Dict2Obj, get_config
+from cfonts import render
 
-config = Dict2Obj(loads(open("config.json", "r").read()))
-
+config = get_config()
 
 MENU = Dict2Obj({
     "not_available": "Menu tidak tersedia!",
@@ -111,6 +109,10 @@ USAGE = Dict2Obj({
         f"Perintah: {config.prefix}setprefix\n"
         f"Contoh: {config.prefix}setprefix ?"
     ),
+    "chatgpt": (
+        f"Perintah: {config.prefix}chatgpt - {config.prefix}gpt\n"
+        f"Contoh: {config.prefix}chatgpt Perkenalkan nama saya Hitori-Bot"
+    ),
 })
 
 PROCESSING = "Sedang diproses..."
@@ -154,8 +156,6 @@ INFO = (
     f"© 2023 by *MhankBarBar* made with ❤️"
 )
 
-BANNER = (
-    f"{Fore.CYAN}╦ ╦{Fore.WHITE}┬┌┬┐┌─┐┬─┐┬  {Fore.CYAN}╦ ╦{Fore.WHITE}┬ ┬┌─┐┌┬┐┌─┐{Fore.CYAN}╔═╗{Fore.WHITE}┌─┐┌─┐  {Fore.CYAN}╔╗ {Fore.WHITE}┌─┐┌┬┐\n"
-    f"{Fore.CYAN}╠═╣{Fore.WHITE}│ │ │ │├┬┘│  {Fore.CYAN}║║║{Fore.WHITE}├─┤├─┤ │ └─┐{Fore.CYAN}╠═╣{Fore.WHITE}├─┘├─┘  {Fore.CYAN}╠╩╗{Fore.WHITE}│ │ │\n"
-    f"{Fore.CYAN}╩ ╩{Fore.WHITE}┴ ┴ └─┘┴└─┴  {Fore.CYAN}╚╩╝{Fore.WHITE}┴ ┴┴ ┴ ┴ └─┘{Fore.CYAN}╩ ╩{Fore.WHITE}┴  ┴    {Fore.CYAN}╚═╝{Fore.WHITE}└─┘ ┴"
+BANNER = render(
+    "Hitori|WhatsApp|Bot", colors=["cyan", "white"], align="center", font="slick", space=False
 )

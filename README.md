@@ -25,6 +25,10 @@ replace the `secure_api_key` with whatever you want
 > npx @open-wa/wa-automate --socket -p 8085 -k secure_api_key --use-chrome
 > python3 main.py
 ```
+also don't forget to replace this part with your own secure_api_key in `main.py` on line 6
+```python
+KEY = 'your secure api key here'
+```
 #### Cli usage
 For advanced users, you can use cli to run the bot, this command will automatically restart program when file changed/modified
 ```cmd
@@ -35,15 +39,17 @@ open `config.json` and change this part with whatever you want
 ```json
 {
     "authorSticker": "MhankBarBar",
+    "chatGPT": "",
     "owner": "62xxxxxx@c.us",
     "packSticker": "Hitori Bot",
     "prefix": "!"
 }
 ```
-also don't forget to replace this part with your own secure_api_key in `main.py` on line 6
-```python
-KEY = 'your secure api key here'
-```
+### How to get chatGPT api-key?
+1. Create account on OpenAI
+2. Go to https://platform.openai.com/account/api-keys
+3. Copy API key and paste it on `config.json`
+
 
 # Features
 |     Feature     | Status |

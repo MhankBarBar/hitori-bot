@@ -1,13 +1,14 @@
-from src.utils import Dict2Obj, colorize, processTime, h2k
+from base64 import b64encode
+from datetime import datetime
+from io import BytesIO
+from json import loads, dumps
+
+from lib.dalle import Dalle
 from lib.genshin_achievement import genshin_achievement
 from lib.jadi_anime import AnimeConverter
 from lib.tiktok import TikTok
-from lib.dalle import Dalle
-from io import BytesIO
-from PIL import Image
-from base64 import b64encode
-from json import loads, dumps
-from datetime import datetime
+from lib.chatGPT import chatGPT
+from src.utils import Dict2Obj, colorize, processTime, h2k, get_config
 from .lang import ind
 
 
@@ -15,8 +16,7 @@ class msgHandler:
     def __init__(self, client, message, start) -> None:
         self.hitori = client
         self.message = Dict2Obj(message["data"]) if isinstance(message, dict) else None
-        with open("config.json", "r") as f:
-            self.config = Dict2Obj(loads(f.read()))
+        self.config = get_config()
         self.lang = ind
         self.start = start
 
@@ -350,6 +350,13 @@ class msgHandler:
                 with open("config.json", "w") as f:
                     f.write(dumps(self.config.__dict__, indent=4))
                 self.hitori.reply(from_, self.lang.SUCCESS.set_prefix % args[0], id_)
+
+            # Other Commands
+            elif command in ["chatgpt", "gpt"]:
+                if len(args) == 0:
+                    return self.hitori.reply(from_, self.lang.USAGE.chatgpt, id_)
+                self.hitori.reply(from_, self.lang.PROCESSING, id_)
+                self.hitori.reply(from_, chatGPT(" ".join(args)), id_)
 
         except Exception as e:
             print(e)

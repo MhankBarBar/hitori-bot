@@ -1,7 +1,7 @@
-import math
+import math, json
 from datetime import datetime
 from colorama import Fore, Style
-from munch import *
+from munch import DefaultMunch
 
 
 def Dict2Obj(d) -> DefaultMunch:
@@ -26,3 +26,11 @@ def h2k(num: int):
     s = round(num / p, 2)
     anu = f"{s} {size_name[i]}"
     return anu.strip()[:-2] if anu.strip().endswith('.0') else anu.strip()
+
+
+def get_config() -> DefaultMunch:
+    with open("config.json", "r") as f:
+        config = Dict2Obj(
+            json.loads(f.read())
+        )
+    return config
