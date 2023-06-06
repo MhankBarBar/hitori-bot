@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://mhankbarbar.codes/assets/images/bocchi.png" height="200px" alt="bocchi"/>
+  <img src="https://i.ibb.co/TKfNh1r/bocchi.png" height="200px" alt="bocchi"/>
   <h3 align="center">Hitori Bot is Multipurpose WhatsApp Bot Written in Python</h3>
 </p>
 
